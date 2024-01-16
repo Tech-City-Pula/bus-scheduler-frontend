@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<!-- link stylesheet here -->
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<!-- this is where our date range display goes -->
+		<h1 id="selected-week" class="selected-week"></h1>
+
+		<br />
+
+		<div class="navigation">
+			<!-- previous/next buttons are here -->
+			<div class="buttons">
+				<button id="previous-button" disabled>&lt;</button>
+				<button id="next-button" disabled>&gt;</button>
+			</div>
+
+			<!-- loading indicator shows up when we select new driver/page -->
+			<div id="loading-indicator">loading...</div>
+
+			<!-- dropdown for driver selection is here -->
+			<div class="dropdown">
+				<select id="driver-dropdown">
+					<option value="" disabled selected hidden>Odaberi vozaca</option>
+				</select>
+			</div>
+		</div>
+
+		<br />
+
+		<!-- hide table until a driver is selected -->
+		<div id="table" class="table hidden">
+			<!-- top layer, this is where the trips will spawn -->
+			<div id="trips" class="trips-container"></div>
+
+			<!-- middle layer with lines -->
+			<div class="line-overlay">
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+				<div class="line"></div>
+			</div>
+
+			<!-- bottom layer -->
+			<div class="columns">
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+				<div class="table-column"></div>
+			</div>
+		</div>
+
+		<br />
+
+		<!-- type="module" because we use the import keyword inside the script -->
+		<script type="module" src="script.js"></script>
+	</body>
+</html>
