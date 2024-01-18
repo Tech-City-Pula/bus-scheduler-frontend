@@ -109,3 +109,27 @@ button:disabled {
 .hidden {
 	display: none;
 }
+
+#fab {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 100;
+}
+
+#trip-form {
+	flex-direction: column;
+	gap: 16px;
+	max-width: 320px;
+	position: fixed;
+	bottom: 60px;
+	right: 20px;
+	z-index: 100;
+	padding: 16px;
+	border: 1px solid black;
+	background-color: white;
+}
+
+.show-form {
+	display: flex;
+}

@@ -25,7 +25,7 @@
 
 			<!-- dropdown for driver selection is here -->
 			<div class="dropdown">
-				<select id="driver-dropdown">
+				<select id="driver-schedule-dropdown">
 					<option value="" disabled selected hidden>Odaberi vozaca</option>
 				</select>
 			</div>
@@ -79,6 +79,28 @@
 		</div>
 
 		<br />
+
+		<button id="fab">+</button>
+
+		<form id="trip-form" class="hidden">
+			<select id="driver-form-select" name="driver-form-select">
+				<option value="" disabled selected hidden>Odaberi vozaca</option>
+			</select>
+			<select id="departure-form-select" name="departure-form-select">
+				<option value="" disabled selected hidden>Odaberi polaziste</option>
+			</select>
+			<select id="destination-form-select" name="destination-form-select">
+				<option value="" disabled selected hidden>Odaberi destinaciju</option>
+			</select>
+
+			<input type="datetime-local" name="datetime-form-select" />
+			<input type="number" min="1" step="1" name="duration-form-select" />
+
+			<div>
+				<button type="button" id="trip-form-cancel-button">Odustani</button>
+				<button type="submit">Podnesi</button>
+			</div>
+		</form>
 
 		<!-- type="module" because we use the import keyword inside the script -->
 		<script type="module" src="script.js"></script>

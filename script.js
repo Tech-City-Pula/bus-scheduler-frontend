@@ -13,12 +13,20 @@ const table = document.getElementById('table');
 const loadingIndicator = document.getElementById('loading-indicator');
 const selectedWeekContainer = document.getElementById('selected-week');
 const tripsContainer = document.getElementById('trips');
-const driverDropdown = document.getElementById('driver-dropdown');
+const driverDropdown = document.getElementById('driver-schedule-dropdown');
 const previousButton = document.getElementById('previous-button');
 const nextButton = document.getElementById('next-button');
+const floatingActionButton = document.getElementById('fab');
+const tripForm = document.getElementById('trip-form');
+const driverFormDropdown = document.getElementById('driver-form-select');
+const departureFormDropdown = document.getElementById('departure-form-select');
+const destinationFormDropdown = document.getElementById(
+	'destination-form-select'
+);
+const tripFormCancelButton = document.getElementById('trip-form-cancel-button');
 
 // function for creating a trip card
-function createTrip({
+function createTripElement({
 	hour,
 	weekDay,
 	duration,
@@ -75,6 +83,7 @@ async function getDrivers() {
 		option.textContent = driver.name;
 
 		driverDropdown.appendChild(option);
+		driverFormDropdown.appendChild(option.cloneNode(true));
 	});
 
 	hideLoading();
@@ -158,7 +167,7 @@ async function getSchedule(driverId, date) {
 		// is null if there are no trips for that day
 		if (trips?.length > 0) {
 			trips.forEach((trip) => {
-				const tripHtml = createTrip(trip);
+				const tripHtml = createTripElement(trip);
 
 				tripsContainer.innerHTML += tripHtml;
 			});
@@ -184,10 +193,54 @@ function createWeekdayHeader(date) {
 	selectedWeekContainer.textContent = `${formattedStartDate} - ${formattedEndDate}`;
 }
 
-// when the page is loaded get all the bus drivers for the dropdown
+// function for getting all the cities and creating option elements for the select dropdown
+async function getCities() {
+	const response = await fetch(API_BASE_URL + '/cities');
+
+	const json = await response.json();
+
+	json.cities.forEach((city) => {
+		const option = document.createElement('option');
+		option.value = city.id;
+		option.textContent = city.name;
+
+		departureFormDropdown.appendChild(option);
+		destinationFormDropdown.appendChild(option.cloneNode(true));
+	});
+}
+
+// function for creating a new trip
+async function createNewTrip({
+	driverId,
+	departureId,
+	destinationId,
+	date,
+	duration,
+}) {
+	// construct the request body
+	const requestBody = {
+		driverId: driverId,
+		departure: departureId,
+		destination: destinationId,
+		date: date,
+		duration: duration,
+	};
+
+	await fetch(API_BASE_URL + '/trip', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(requestBody), // javascript object needs to turned into json (JavaScript Object Notation) string
+	});
+
+	await getSchedule(currentDriverId, currentDateTime);
+}
+
+// when the page is loaded get all the bus drivers and cities for the dropdowns
 document.addEventListener('DOMContentLoaded', () => {
 	getDrivers();
-
+	getCities();
 	createWeekdayHeader(currentDateTime);
 });
 
@@ -216,4 +269,53 @@ nextButton.addEventListener('click', () => {
 	createWeekdayHeader(currentDateTime);
 
 	getSchedule(currentDriverId, currentDateTime);
+});
+
+// toggle trip form on button click
+floatingActionButton.addEventListener('click', () => {
+	tripForm.classList.toggle('show-form');
+});
+
+// create new trip on form submit
+tripForm.addEventListener('submit', async (event) => {
+	event.preventDefault(); // prevent default form submit behaviour
+	const form = event.target; // extract form element from event
+	const formData = new FormData(form); // create form data from form element
+
+	// get all the values from the form
+	const driverId = formData.get('driver-form-select');
+	const destinationId = formData.get('destination-form-select');
+	const departureId = formData.get('departure-form-select');
+	const duration = formData.get('duration-form-select');
+	let date = formData.get('datetime-form-select');
+
+	// set minutes, seconds and milliseconds to 0
+	date = new Date(date);
+	date = dateFns.setMinutes(date, 0);
+	date = dateFns.setSeconds(date, 0);
+	date = dateFns.setMilliseconds(date, 0);
+
+	showLoading();
+
+	// make network request to create new trip
+	await createNewTrip({
+		driverId: Number(driverId),
+		date: date,
+		departureId: Number(departureId),
+		destinationId: Number(destinationId),
+		duration: Number(duration),
+	});
+
+	hideLoading();
+
+	form.reset();
+
+	tripForm.classList.toggle('show-form');
+});
+
+// clear form and hide trip form on cancel button click
+tripFormCancelButton.addEventListener('click', () => {
+	form.reset();
+
+	tripForm.classList.toggle('show-form');
 });
